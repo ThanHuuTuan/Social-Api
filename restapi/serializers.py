@@ -3,10 +3,19 @@ from rest_framework import serializers
 from .models import *
 from django.shortcuts import get_object_or_404
 
+class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
+  class Meta:
+    model = UserProfile 
+    fields = ('image', 'about')
+  #end
+#end
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+  
+  profile = UserProfileSerializer()
   class Meta:
     model = User
-    fields = ('url', 'username', 'email')
+    fields = ('url', 'profile', 'username', 'email')
   #end
 
 
@@ -17,9 +26,10 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
   #end
 
 class UserPostSerializer(serializers.HyperlinkedModelSerializer):
+  author = UserSerializer()
   class Meta:
     model = UserPost 
-    fields = ('url', 'content', 'author', 'image', 'publish')
+    fields = ('url', 'author', 'content', 'image', 'publish')
   #end
   def create(self, validate_data):
     post = UserPost.objects.create(**validate_data)
@@ -33,14 +43,9 @@ class UserPostSerializer(serializers.HyperlinkedModelSerializer):
   #end
 #end
 
-class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
-  class Meta:
-    model = UserProfile 
-    fields = ('image', 'about')
-  #end
-#end
-
 class UserMessageSerializer(serializers.HyperlinkedModelSerializer):
+  sender = UserSerializer()
+  recver = UserSerializer()
   class Meta:
     model = UserMessage 
     fields = ('sender', 'recver', 'content', 'time', 'seen')
@@ -49,6 +54,7 @@ class UserMessageSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class GroupMessageSerializer(serializers.HyperlinkedModelSerializer):
+  sender = UserSerializer()
   class Meta:
     model = GroupMessage 
     fields = ('sender', 'group', 'content', 'time', 'seen')

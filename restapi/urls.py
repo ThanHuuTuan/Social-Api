@@ -31,10 +31,9 @@ urlpatterns = [
   path('api/', include(router.urls)),
   path('api/login/', tokenViews.obtain_auth_token),
   path('api/logout/', views.TokenLogout.as_view()),
-  path('api/<str:username>/friends/', views.GetUserFriends.as_view()),
-  path('api/<str:username>/posts/', views.GetUserPosts.as_view()),
-  path('api/<str:username>/profile/', views.GetUserProfile.as_view()),
-  path('api/<str:username>/messages/', views.GetFriendMessages.as_view()),
+  path('api/users/<int:pk>/friends/', views.GetUserFriends.as_view()),
+  path('api/users/<int:pk>/posts/', views.GetUserPosts.as_view()),
+  path('api/users/<int:pk>/messages/', views.GetFriendMessages.as_view()),
   path('api/groups/<int:pk>/messages/', views.GetGroupMessages.as_view()),
   path('admin/', admin.site.urls),
   path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))

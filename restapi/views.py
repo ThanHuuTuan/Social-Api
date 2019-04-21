@@ -11,7 +11,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 
 class UserViewSet(viewsets.ModelViewSet):
-  queryset = User.objects.all().order_by('-date_joined')
+  queryset = User.objects.all()
   serializer_class = UserSerializer
 #end
 
@@ -31,8 +31,8 @@ class UserGroupViewSet(viewsets.ModelViewSet):
 #end
 
 class GetUserFriends(APIView):
-  def get(self, request, username):
-    user = get_object_or_404(User, username=username)
+  def get(self, request, pk):
+    user = get_object_or_404(User, pk=pk)
     queryset = getFriends(user.id)
     serializer = UserSerializer(queryset, many=True, context={'request': request})
     return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -40,8 +40,8 @@ class GetUserFriends(APIView):
 #end
 
 class GetUserPosts(APIView):
-  def get(self, request, username):
-    user = get_object_or_404(User, username=username)
+  def get(self, request, pk):
+    user = get_object_or_404(User, pk=pk)
     queryset = UserPost.objects.filter(author=user.id)
     serializer = UserPostSerializer(queryset, many=True, context={'request': request})
     return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -49,17 +49,17 @@ class GetUserPosts(APIView):
 #end
 
 class GetUserProfile(APIView):
-  def get(self, request, username):
-    user = get_object_or_404(User, username=username)
+  def get(self, request, pk):
+    user = get_object_or_404(User, pk=pk)
     serializer = UserProfileSerializer(user.profile, context={'request': request})
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
 #end
 
 class GetFriendMessages(APIView):
-  def get(self, request, username):
-    friend = get_object_or_404(User, username=username)
-    messages = UserMessage.objects.filter(Q(sender=request.user, recver=username)|Q(sender=username, recver=request.user))
+  def get(self, request, pk):
+    friend = get_object_or_404(User, pk=pk)
+    messages = UserMessage.objects.filter(Q(sender=request.user, recver=friend)|Q(sender=friend, recver=request.user))
     serializer = UserMessageSerializer(messages, many=True, context={'request': request})
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
