@@ -11,7 +11,6 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
 #end
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-  
   profile = UserProfileSerializer()
   class Meta:
     model = User
@@ -66,4 +65,11 @@ class UserGroupSerializer(serializers.HyperlinkedModelSerializer):
     model = UserGroup
     fields = ('url', 'name', 'created', 'type', 'image')
   #end
+#end
+
+class MemberStatusSerializer(serializers.Serializer):
+  member = serializers.BooleanField()
+  notmber = serializers.BooleanField()
+  admin = serializers.BooleanField()
+  sntrqst = serializers.BooleanField()
 #end

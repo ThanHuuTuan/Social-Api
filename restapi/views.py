@@ -28,6 +28,16 @@ class UserPostViewSet(viewsets.ModelViewSet):
 class UserGroupViewSet(viewsets.ModelViewSet):
   queryset = UserGroup.objects.all()
   serializer_class = UserGroupSerializer
+
+  def retrieve(self, request, pk=None):
+    group = get_object_or_404(UserGroup, pk=pk)
+    mberStatus = getMberSts(request.user, pk)
+    serializer = UserGroupSerializer(group, context={'request': request})
+    print(mberStatus)
+    data = serializer.data
+    data['status'] = mberStatus
+    return Response(data=data, status=status.HTTP_200_OK)
+  #end
 #end
 
 class GetUserFriends(APIView):
@@ -58,8 +68,7 @@ class GetUserProfile(APIView):
 
 class GetFriendMessages(APIView):
   def get(self, request, pk):
-    friend = get_object_or_404(User, pk=pk)
-    messages = UserMessage.objects.filter(Q(sender=request.user, recver=friend)|Q(sender=friend, recver=request.user))
+    messages = UserMessage.objects.filter(Q(sender=request.user, recver=pk)|Q(sender=pk, recver=request.user))
     serializer = UserMessageSerializer(messages, many=True, context={'request': request})
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
@@ -67,9 +76,17 @@ class GetFriendMessages(APIView):
 
 class GetGroupMessages(APIView):
   def get(self, request, pk):
-    group = get_object_or_404(UserGroup, pk=pk)
-    messages = GroupMessage.objects.filter(group=group)
+    messages = GroupMessage.objects.filter(group=pk)
     serializer = GroupMessageSerializer(messages, many=True, context={'request': request})
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+  #end
+#end
+
+
+class GetGroupMembers(APIView):
+  def get(self, request, pk):
+    members = getMembers(pk)
+    serializer = UserSerializer(members, many=True, context={'request': request})
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
 #end

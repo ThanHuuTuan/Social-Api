@@ -35,6 +35,7 @@ urlpatterns = [
   path('api/users/<int:pk>/posts/', views.GetUserPosts.as_view()),
   path('api/users/<int:pk>/messages/', views.GetFriendMessages.as_view()),
   path('api/groups/<int:pk>/messages/', views.GetGroupMessages.as_view()),
+  path('api/groups/<int:pk>/members/', views.GetGroupMembers.as_view()),
   path('admin/', admin.site.urls),
   path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

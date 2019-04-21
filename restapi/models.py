@@ -133,7 +133,7 @@ class GroupMember(models.Model):
     default=False
   )
   def __str__(self):
-    return self.user
+    return self.owner.username
   #end
 #end
 
@@ -198,6 +198,13 @@ def getAllGroups(user):
   return groups
 #end
 
+def getMembers(group):
+  memberships = GroupMember.objects.filter(group=group)
+  members = [membership.owner for membership in memberships]
+  return members
+#end
+
+
 def getFriendStatus(user, friend):
   friend = Friendship.objects.filter(owner=user, friend=friend).count()
   reqsent = UserRequest.objects.filter(sender=user, recver=friend).count()
@@ -239,11 +246,11 @@ def getMberSts(user, group):
     member = False
   #end
   if(member):
-    return {"member": True, "admin": member.admin}
+    return {"member": True, "admin": member.admin, "sntrqst": False, "notmber": False}
   elif(sntrqst):
-    return {"sntrqst": True}
+    return {"member": False, "admin": False, "sntrqst": True, "notmber": False}
   else:
-    return {"notmber": True}
+    return {"member": False, "admin": False, "sntrqst": False, "notmber": True}
   #end
 #end
 
