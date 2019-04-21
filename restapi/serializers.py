@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 class UserSerializer(serializers.HyperlinkedModelSerializer):
   class Meta:
     model = User
-    fields = ('url', 'username', 'email', 'groups')
+    fields = ('url', 'username', 'email')
   #end
 
 
@@ -58,6 +58,6 @@ class GroupMessageSerializer(serializers.HyperlinkedModelSerializer):
 class UserGroupSerializer(serializers.HyperlinkedModelSerializer):
   class Meta:
     model = UserGroup
-    fields = ('name', 'created', 'type', 'image')
+    fields = ('url', 'name', 'created', 'type', 'image')
   #end
 #end

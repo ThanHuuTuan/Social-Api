@@ -11,26 +11,14 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 
 class UserViewSet(viewsets.ModelViewSet):
-  """
-  API endpoint that allows users to be viewed or edited.
-  """
   queryset = User.objects.all().order_by('-date_joined')
   serializer_class = UserSerializer
-
+#end
 
 class GroupViewSet(viewsets.ModelViewSet):
-  """
-  API endpoint that allows groups to be viewed or edited.
-  """
   queryset = Group.objects.all()
   serializer_class = GroupSerializer
 #end
-
-class TokenLogout(APIView):
-  def get(self, request):
-    Token.objects.filter(user=request.user).delete()
-    return Response(status=status.HTTP_200_OK)
-  #end
 
 class UserPostViewSet(viewsets.ModelViewSet):
   queryset = UserPost.objects.all()
@@ -49,6 +37,7 @@ class GetUserFriends(APIView):
     serializer = UserSerializer(queryset, many=True, context={'request': request})
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
+#end
 
 class GetUserPosts(APIView):
   def get(self, request, username):
@@ -57,6 +46,7 @@ class GetUserPosts(APIView):
     serializer = UserPostSerializer(queryset, many=True, context={'request': request})
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
+#end
 
 class GetUserProfile(APIView):
   def get(self, request, username):
@@ -67,9 +57,9 @@ class GetUserProfile(APIView):
 #end
 
 class GetFriendMessages(APIView):
-  def get(self, request, friend):
-    friend = get_object_or_404(User, username=friend)
-    messages = UserMessage.objects.filter(Q(sender=request.user, recver=friend)|Q(sender=friend, recver=request.user))
+  def get(self, request, username):
+    friend = get_object_or_404(User, username=username)
+    messages = UserMessage.objects.filter(Q(sender=request.user, recver=username)|Q(sender=username, recver=request.user))
     serializer = UserMessageSerializer(messages, many=True, context={'request': request})
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
@@ -82,3 +72,11 @@ class GetGroupMessages(APIView):
     serializer = GroupMessageSerializer(messages, many=True, context={'request': request})
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
+#end
+
+class TokenLogout(APIView):
+  def get(self, request):
+    Token.objects.filter(user=request.user).delete()
+    return Response(status=status.HTTP_200_OK)
+  #end
+#end
