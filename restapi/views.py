@@ -13,6 +13,15 @@ from rest_framework.authtoken.models import Token
 class UserViewSet(viewsets.ModelViewSet):
   queryset = User.objects.all()
   serializer_class = UserSerializer
+
+  def retrieve(self, request, pk=None):
+    user = get_object_or_404(User, pk=pk)
+    frndStatus = getFriendStatus(request.user, pk)
+    serializer = UserSerializer(user, context={'request': request})
+    data = serializer.data
+    data['status'] = frndStatus
+    return Response(data=data, status=status.HTTP_200_OK)
+  #end
 #end
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -33,7 +42,6 @@ class UserGroupViewSet(viewsets.ModelViewSet):
     group = get_object_or_404(UserGroup, pk=pk)
     mberStatus = getMberSts(request.user, pk)
     serializer = UserGroupSerializer(group, context={'request': request})
-    print(mberStatus)
     data = serializer.data
     data['status'] = mberStatus
     return Response(data=data, status=status.HTTP_200_OK)

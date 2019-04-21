@@ -206,10 +206,11 @@ def getMembers(group):
 
 
 def getFriendStatus(user, friend):
-  friend = Friendship.objects.filter(owner=user, friend=friend).count()
+  isFriend = Friendship.objects.filter(owner=user, friend=friend).count()
   reqsent = UserRequest.objects.filter(sender=user, recver=friend).count()
   reqrcvd = UserRequest.objects.filter(sender=friend, recver=user).count()
-  if(friend):
+  print(user, friend, reqsent, reqrcvd)
+  if(isFriend):
     return 'friend'
   elif(reqsent):
     return 'reqsent'
