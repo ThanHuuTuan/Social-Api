@@ -204,6 +204,11 @@ def getMembers(group):
   return members
 #end
 
+def getRequests(group):
+  requests = GroupRequest.objects.filter(group=group)
+  return [request.sender for request in requests]
+#end
+
 
 def getFriendStatus(user, friend):
   isFriend = Friendship.objects.filter(owner=user, friend=friend).count()

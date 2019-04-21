@@ -99,6 +99,16 @@ class GetGroupMembers(APIView):
   #end
 #end
 
+
+class GetGroupRequests(APIView):
+  def get(self, request, pk):
+    requests = getRequests(pk)
+    serializer = UserSerializer(requests, many=True, context={'request': request})
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+  #end
+#end
+
+
 class TokenLogout(APIView):
   def get(self, request):
     Token.objects.filter(user=request.user).delete()
