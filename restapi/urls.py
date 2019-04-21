@@ -24,13 +24,19 @@ router = routers.DefaultRouter()
 router.register('users', views.UserViewSet)
 router.register('groups', views.GroupViewSet)
 router.register('posts', views.UserPostViewSet)
+router.register('usergroups', views.UserGroupViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-  path('', include(router.urls)),
-  path('admin/', admin.site.urls),
+  path('api/', include(router.urls)),
   path('api/login/', tokenViews.obtain_auth_token),
   path('api/logout/', views.TokenLogout.as_view()),
+  path('api/<str:username>/friends/', views.GetUserFriends.as_view()),
+  path('api/<str:username>/posts/', views.GetUserPosts.as_view()),
+  path('api/<str:username>/profile/', views.GetUserProfile.as_view()),
+  path('api/friends/<str:friend>/messages/', views.GetFriendMessages.as_view()),
+  path('api/usergroups/<int:pk>/messages/', views.GetGroupMessages.as_view()),
+  path('admin/', admin.site.urls),
   path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

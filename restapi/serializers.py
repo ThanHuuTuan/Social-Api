@@ -16,17 +16,10 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     fields = ('url', 'name')
   #end
 
-
-class LoginSerializer(serializers.Serializer):
-  username = serializers.CharField(max_length=20)
-  password = serializers.CharField(max_length=50)
-#end
-
-
 class UserPostSerializer(serializers.HyperlinkedModelSerializer):
   class Meta:
     model = UserPost 
-    fields = ('content', 'author', 'image', 'publish')
+    fields = ('url', 'content', 'author', 'image', 'publish')
   #end
   def create(self, validate_data):
     post = UserPost.objects.create(**validate_data)
@@ -37,5 +30,34 @@ class UserPostSerializer(serializers.HyperlinkedModelSerializer):
     instance.image = validate_data.get('image', instance.image)
     instance.save()
     return instance
+  #end
+#end
+
+class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
+  class Meta:
+    model = UserProfile 
+    fields = ('image', 'about')
+  #end
+#end
+
+class UserMessageSerializer(serializers.HyperlinkedModelSerializer):
+  class Meta:
+    model = UserMessage 
+    fields = ('sender', 'recver', 'content', 'time', 'seen')
+  #end
+#end
+
+
+class GroupMessageSerializer(serializers.HyperlinkedModelSerializer):
+  class Meta:
+    model = GroupMessage 
+    fields = ('sender', 'group', 'content', 'time', 'seen')
+  #end
+#end
+
+class UserGroupSerializer(serializers.HyperlinkedModelSerializer):
+  class Meta:
+    model = UserGroup
+    fields = ('name', 'created', 'type', 'image')
   #end
 #end
