@@ -30,10 +30,12 @@ router.register('groups', views.UserGroupViewSet)
 urlpatterns = [
   path('api/', include(router.urls)),
   path('api/login/', tokenViews.obtain_auth_token),
+  path('api/signup/', views.SignUp.as_view()),
   path('api/logout/', views.TokenLogout.as_view()),
   path('api/users/<int:pk>/friends/', views.GetUserFriends.as_view()),
   path('api/users/<int:pk>/posts/', views.GetUserPosts.as_view()),
   path('api/users/<int:pk>/messages/', views.GetFriendMessages.as_view()),
+  path('api/users/<int:pk>/changsts/', views.ChangeFriendStatus.as_view()),
   path('api/groups/<int:pk>/members/', views.GetGroupMembers.as_view()),
   path('api/groups/<int:pk>/messages/', views.GetGroupMessages.as_view()),
   path('api/groups/<int:pk>/requests/', views.GetGroupRequests.as_view()),

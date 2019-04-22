@@ -11,11 +11,12 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
 #end
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-  profile = UserProfileSerializer()
+  profile = UserProfileSerializer(required=False)
   class Meta:
     model = User
     fields = ('url', 'profile', 'username', 'email')
   #end
+#end
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
@@ -25,20 +26,10 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
   #end
 
 class UserPostSerializer(serializers.HyperlinkedModelSerializer):
-  author = UserSerializer()
+  author = UserSerializer(required=False)
   class Meta:
     model = UserPost 
     fields = ('url', 'author', 'content', 'image', 'publish')
-  #end
-  def create(self, validate_data):
-    post = UserPost.objects.create(**validate_data)
-    return post
-  #end
-  def update(self, instance, validate_data):
-    instance.content = validate_data.get('content', instance.content)
-    instance.image = validate_data.get('image', instance.image)
-    instance.save()
-    return instance
   #end
 #end
 
@@ -67,7 +58,7 @@ class UserGroupSerializer(serializers.HyperlinkedModelSerializer):
   #end
 #end
 
-class JoinRequestSerializer(serializers.Serializer):
+class ActionSerializer(serializers.Serializer):
   action = serializers.CharField(max_length=20)
 #end
 
@@ -75,4 +66,9 @@ class JoinRequestSerializer(serializers.Serializer):
 class ManageMemberSerializer(serializers.Serializer):
   user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
   action = serializers.CharField(max_length=20)
+#end
+
+class LoginSerializer(serializers.Serializer):
+  username = serializers.CharField(max_length=20)
+  password = serializers.CharField(max_length=20, style={'input_type': 'password'})
 #end

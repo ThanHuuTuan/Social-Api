@@ -214,7 +214,7 @@ def getFriendStatus(user, friend):
   isFriend = Friendship.objects.filter(owner=user, friend=friend).count()
   reqsent = UserRequest.objects.filter(sender=user, recver=friend).count()
   reqrcvd = UserRequest.objects.filter(sender=friend, recver=user).count()
-  if(user == friend):
+  if(id(user) == id(friend)):
     return 'thiself'
   elif(isFriend):
     return 'friend'

@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny
 
 class UserViewSet(viewsets.ModelViewSet):
   queryset = User.objects.all()
@@ -16,7 +17,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
   def retrieve(self, request, pk=None):
     user = get_object_or_404(User, pk=pk)
-    frndStatus = getFriendStatus(request.user, pk)
+    frndStatus = getFriendStatus(request.user.id, user.id)
     serializer = UserSerializer(user, context={'request': request})
     data = serializer.data
     data['status'] = frndStatus
@@ -40,7 +41,7 @@ class UserGroupViewSet(viewsets.ModelViewSet):
 
   def retrieve(self, request, pk=None):
     group = get_object_or_404(UserGroup, pk=pk)
-    mberStatus = getMberSts(request.user, pk)
+    mberStatus = getMberSts(request.user.id, pk)
     serializer = UserGroupSerializer(group, context={'request': request})
     data = serializer.data
     data['status'] = mberStatus
@@ -82,6 +83,17 @@ class GetFriendMessages(APIView):
   #end
 #end
 
+class ChangeFriendStatus(APIView):
+  def post(self, request, pk):
+    friend = get_object_or_404(User, pk=pk)
+    serializer = ActionSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    action = serializer.data.get('action')
+    changeFrndSts(request.user, friend, action)
+    return Response(status=status.HTTP_200_OK)
+  #end
+#end
+
 class GetGroupMessages(APIView):
   def get(self, request, pk):
     messages = GroupMessage.objects.filter(group=pk)
@@ -110,7 +122,7 @@ class GetGroupRequests(APIView):
 
 class ManageJoinRequest(APIView):
   def post(self, request, pk):
-    serializer = JoinRequestSerializer(data=request.data)
+    serializer = ActionSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     action = serializer.data.get('action')
     group = get_object_or_404(UserGroup, pk=pk)
@@ -129,6 +141,15 @@ class ManageMemberRole(APIView):
     action = serializer.data.get('action')
     mangMemberRole(user, group, action)
     return Response(status=status.HTTP_200_OK)
+  #end
+#end
+
+class SignUp(APIView):
+  permission_classes = (AllowAny,)
+  def post(self, request):
+    serializer = UserSerializer(data=request.data, context={'request': request})
+    serializer.is_valid(raise_exception=True)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
 #end
 
