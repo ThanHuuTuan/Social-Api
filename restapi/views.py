@@ -23,6 +23,20 @@ class UserViewSet(viewsets.ModelViewSet):
     data['status'] = frndStatus
     return Response(data=data, status=status.HTTP_200_OK)
   #end
+
+  def create(self, request):
+    serializer = UserSerializer(data=request.data, context={'request': request})
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    data = serializer.data
+    user = User.objects.get(username=data.get('username'))
+    image = generateImage(user.email)
+    serializer = UserProfileSerializer(data={'owner': user.id, 'image': image})
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    data['profile'] = serializer.data
+    return Response(data=data)
+  #end
 #end
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -147,22 +161,17 @@ class ManageMemberRole(APIView):
 class SignUp(APIView):
   permission_classes = (AllowAny,)
   def post(self, request):
-    email = request.data.get('email')
-    username = request.data.get('username')
-    password = request.data.get('password')
-    emailSerializer = EmailSerializer(data={'email': email})
-    emailSerializer.is_valid(raise_exception=True)
-    image = generateImage(emailSerializer.data.get('email'))
-    serializer = UserSerializer(data={'profile': {'image': image}, 'username': username, 'email': email, 'password': password}, context={'request': request})
+    serializer = UserSerializer(data=request.data, context={'request': request})
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    user = User.objects.get(username=serializer.data.get('username'))
+    data = serializer.data
+    user = User.objects.get(username=data.get('username'))
+    image = generateImage(user.email)
+    serializer = UserProfileSerializer(data={'owner': user.id, 'image': image})
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
     token = Token.objects.create(user=user)
-    return Response({
-      'token': token.key,
-      'user_id': user.pk,
-      'email': user.email
-    })
+    return Response(data={'token': token.key})
   #end
 #end
 

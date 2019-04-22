@@ -4,30 +4,19 @@ from .models import *
 from django.shortcuts import get_object_or_404
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
+  owner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
   class Meta:
     model = UserProfile 
-    fields = ('image', 'about')
+    fields = ('id', 'owner', 'image', 'about')
   #end
 #end
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-  profile = UserProfileSerializer(required=False)
+  profile = UserProfileSerializer(read_only=True)
   class Meta:
     model = User
-    fields = ('url', 'profile', 'password', 'username', 'email')
+    fields = ('id', 'url', 'profile', 'password', 'username', 'email')
     extra_kwargs = {'password': {'write_only': True}}
-  #end
-
-  def create(self, validated_data):
-    profile_data = validated_data.pop('profile')
-    user = User(
-        email=validated_data['email'],
-        username=validated_data['username']
-    )
-    user.set_password(validated_data['password'])
-    user.save()
-    UserProfile.objects.create(owner=user, image=profile_data['image'])
-    return user
   #end
 #end
 
@@ -35,39 +24,39 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
   class Meta:
     model = Group
-    fields = ('url', 'name')
+    fields = ('id', 'url', 'name')
   #end
 
 class UserPostSerializer(serializers.HyperlinkedModelSerializer):
-  author = UserSerializer(required=False)
+  author = UserSerializer(read_only=True)
   class Meta:
     model = UserPost 
-    fields = ('url', 'author', 'content', 'image', 'publish')
+    fields = ('id', 'url', 'author', 'content', 'image', 'publish')
   #end
 #end
 
 class UserMessageSerializer(serializers.HyperlinkedModelSerializer):
-  sender = UserSerializer()
-  recver = UserSerializer()
+  sender = UserSerializer(read_only=True)
+  recver = UserSerializer(read_only=True)
   class Meta:
     model = UserMessage 
-    fields = ('sender', 'recver', 'content', 'time', 'seen')
+    fields = ('id', 'sender', 'recver', 'content', 'time', 'seen')
   #end
 #end
 
 
 class GroupMessageSerializer(serializers.HyperlinkedModelSerializer):
-  sender = UserSerializer()
+  sender = UserSerializer(read_only=True)
   class Meta:
     model = GroupMessage 
-    fields = ('sender', 'group', 'content', 'time', 'seen')
+    fields = ('id', 'sender', 'group', 'content', 'time', 'seen')
   #end
 #end
 
 class UserGroupSerializer(serializers.HyperlinkedModelSerializer):
   class Meta:
     model = UserGroup
-    fields = ('url', 'name', 'created', 'type', 'image')
+    fields = ('id', 'url', 'name', 'created', 'type', 'image')
   #end
 #end
 
