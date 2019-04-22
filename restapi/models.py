@@ -214,8 +214,9 @@ def getFriendStatus(user, friend):
   isFriend = Friendship.objects.filter(owner=user, friend=friend).count()
   reqsent = UserRequest.objects.filter(sender=user, recver=friend).count()
   reqrcvd = UserRequest.objects.filter(sender=friend, recver=user).count()
-  print(user, friend, reqsent, reqrcvd)
-  if(isFriend):
+  if(user == friend):
+    return 'thiself'
+  elif(isFriend):
     return 'friend'
   elif(reqsent):
     return 'reqsent'
@@ -250,18 +251,17 @@ def getMberSts(user, group):
     member = GroupMember.objects.get(owner=user, group=group)
   except Exception as e:
     member = False
-  #end
   if(member):
-    return {"member": True, "admin": member.admin, "sntrqst": False, "notmber": False}
+    return {"member": True, "admin": member.admin, "sntrqst": False}
   elif(sntrqst):
-    return {"member": False, "admin": False, "sntrqst": True, "notmber": False}
+    return {"member": False, "admin": False, "sntrqst": True}
   else:
-    return {"member": False, "admin": False, "sntrqst": False, "notmber": True}
+    return {"member": False, "admin": False, "sntrqst": False}
   #end
 #end
 
 
-def changeMemberRole(user, group, action):
+def managJoinRequest(user, group, action):
   if(action == 'sendrqust'):
     GroupRequest.objects.create(sender=user,group=group)
   elif(action == 'delsntrqust'):

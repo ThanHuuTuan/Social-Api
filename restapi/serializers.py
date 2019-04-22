@@ -66,3 +66,13 @@ class UserGroupSerializer(serializers.HyperlinkedModelSerializer):
     fields = ('url', 'name', 'created', 'type', 'image')
   #end
 #end
+
+class JoinRequestSerializer(serializers.Serializer):
+  action = serializers.CharField(max_length=20)
+#end
+
+
+class ManageMemberSerializer(serializers.Serializer):
+  user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+  action = serializers.CharField(max_length=20)
+#end

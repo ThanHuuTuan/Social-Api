@@ -108,6 +108,29 @@ class GetGroupRequests(APIView):
   #end
 #end
 
+class ManageJoinRequest(APIView):
+  def post(self, request, pk):
+    serializer = JoinRequestSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    action = serializer.data.get('action')
+    group = get_object_or_404(UserGroup, pk=pk)
+    managJoinRequest(request.user, group, action)
+    return Response(status=status.HTTP_200_OK)
+  #end
+#end
+
+class ManageMemberRole(APIView):
+  def post(self, request, pk):
+    serializer = ManageMemberSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    userId = serializer.data.get('user')
+    user = get_object_or_404(User, pk=userId)
+    group = get_object_or_404(UserGroup, pk=pk)
+    action = serializer.data.get('action')
+    mangMemberRole(user, group, action)
+    return Response(status=status.HTTP_200_OK)
+  #end
+#end
 
 class TokenLogout(APIView):
   def get(self, request):

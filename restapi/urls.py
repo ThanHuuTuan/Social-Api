@@ -37,6 +37,8 @@ urlpatterns = [
   path('api/groups/<int:pk>/members/', views.GetGroupMembers.as_view()),
   path('api/groups/<int:pk>/messages/', views.GetGroupMessages.as_view()),
   path('api/groups/<int:pk>/requests/', views.GetGroupRequests.as_view()),
+  path('api/groups/<int:pk>/magerqst/', views.ManageJoinRequest.as_view()),
+  path('api/groups/<int:pk>/magerole/', views.ManageMemberRole.as_view()),
   path('admin/', admin.site.urls),
   path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
