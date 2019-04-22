@@ -14,13 +14,14 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
   profile = UserProfileSerializer(required=False)
   class Meta:
     model = User
-    fields = ('profile', 'username', 'email')
+    fields = ('url', 'profile', 'username', 'email')
   #end
 
   def create(self, validated_data):
     profile_data = validated_data.pop('profile')
+    print(validated_data)
     user = User.objects.create(**validated_data)
-    Profile.objects.create(owner=user, **profile_data)
+    UserProfile.objects.create(owner=user, **profile_data)
     return user
   #end
 #end

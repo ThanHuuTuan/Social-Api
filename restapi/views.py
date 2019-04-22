@@ -155,6 +155,7 @@ class SignUp(APIView):
     image = generateImage(emailSerializer.data.get('email'))
     serializer = UserSerializer(data={'profile': {'image': image}, 'username': username, 'email': email, 'password': password}, context={'request': request})
     serializer.is_valid(raise_exception=True)
+    serializer.save()
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
 #end
