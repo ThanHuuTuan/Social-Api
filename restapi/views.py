@@ -147,7 +147,13 @@ class ManageMemberRole(APIView):
 class SignUp(APIView):
   permission_classes = (AllowAny,)
   def post(self, request):
-    serializer = UserSerializer(data=request.data, context={'request': request})
+    email = request.data.get('email')
+    username = request.data.get('username')
+    password = request.data.get('password')
+    emailSerializer = EmailSerializer(data={'email': email})
+    emailSerializer.is_valid(raise_exception=True)
+    image = generateImage(emailSerializer.data.get('email'))
+    serializer = UserSerializer(data={'profile': {'image': image}, 'username': username, 'email': email, 'password': password}, context={'request': request})
     serializer.is_valid(raise_exception=True)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
