@@ -35,7 +35,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer.is_valid(raise_exception=True)
     serializer.save()
     data['profile'] = serializer.data
-    return Response(data=data)
+    return Response(data=data, status=status.HTTP_200_OK)
   #end
 #end
 
@@ -171,7 +171,7 @@ class SignUp(APIView):
     serializer.is_valid(raise_exception=True)
     serializer.save()
     token = Token.objects.create(user=user)
-    return Response(data={'token': token.key})
+    return Response(data={'token': token.key}, status=status.HTTP_200_OK)
   #end
 #end
 
