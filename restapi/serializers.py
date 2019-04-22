@@ -14,14 +14,19 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
   profile = UserProfileSerializer(required=False)
   class Meta:
     model = User
-    fields = ('url', 'profile', 'username', 'email')
+    fields = ('url', 'profile', 'password', 'username', 'email')
+    extra_kwargs = {'password': {'write_only': True}}
   #end
 
   def create(self, validated_data):
     profile_data = validated_data.pop('profile')
-    print(validated_data)
-    user = User.objects.create(**validated_data)
-    UserProfile.objects.create(owner=user, **profile_data)
+    user = User(
+        email=validated_data['email'],
+        username=validated_data['username']
+    )
+    user.set_password(validated_data['password'])
+    user.save()
+    UserProfile.objects.create(owner=user, image=profile_data['image'])
     return user
   #end
 #end

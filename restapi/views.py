@@ -156,7 +156,13 @@ class SignUp(APIView):
     serializer = UserSerializer(data={'profile': {'image': image}, 'username': username, 'email': email, 'password': password}, context={'request': request})
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(data=serializer.data, status=status.HTTP_200_OK)
+    user = User.objects.get(username=serializer.data.get('username'))
+    token = Token.objects.create(user=user)
+    return Response({
+      'token': token.key,
+      'user_id': user.pk,
+      'email': user.email
+    })
   #end
 #end
 
