@@ -2,7 +2,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import *
 from django.shortcuts import get_object_or_404
-
+from datetime import date
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
   owner = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
   class Meta:
@@ -37,6 +37,11 @@ class UserPostSerializer(serializers.HyperlinkedModelSerializer):
   class Meta:
     model = UserPost 
     fields = ('id', 'url', 'author', 'content', 'image', 'publish')
+
+  def create(self, validated_date):
+    validated_date['author'] = self.context['request'].user
+    post = UserPost.objects.create(**validated_date)
+    return post
   #end
 #end
 
