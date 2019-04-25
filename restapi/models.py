@@ -204,6 +204,17 @@ def getMembers(group):
   return members
 #end
 
+def isGroupAdmin(user, group):
+  admin = GroupMember.objects.filter(owner=user, group=group, admin=True).count()
+  return admin != 0
+#end
+
+def getAdmins(group):
+  memberships = GroupMember.objects.filter(group=group, admin=True)
+  members = [membership.owner for membership in memberships]
+  return members
+#end
+
 def getRequests(group):
   requests = GroupRequest.objects.filter(group=group)
   return [request.sender for request in requests]

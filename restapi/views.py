@@ -120,7 +120,16 @@ class GetGroupMessages(APIView):
 class GetGroupMembers(APIView):
   def get(self, request, pk):
     members = getMembers(pk)
-    serializer = UserSerializer(members, many=True, context={'request': request})
+    serializer = UserSerializer(members, many=True, context={'request': request, 'admin': False})
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+  #end
+#end
+
+
+class GetGroupAdmins(APIView):
+  def get(self, request, pk):
+    members = getAdmins(pk)
+    serializer = UserSerializer(members, many=True, context={'request': request, 'admin': True})
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   #end
 #end
@@ -134,7 +143,7 @@ class GetGroupRequests(APIView):
   #end
 #end
 
-class ManageJoinRequest(APIView):
+class ManageMyRequest(APIView):
   def post(self, request, pk):
     serializer = ActionSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -152,6 +161,10 @@ class ManageMemberRole(APIView):
     userId = serializer.data.get('user')
     user = get_object_or_404(User, pk=userId)
     group = get_object_or_404(UserGroup, pk=pk)
+    admin = isGroupAdmin(request.user, group)
+    if(admin is False):
+      return Response(status=status.HTTP_401_UNAUTHORIZED)
+    #end
     action = serializer.data.get('action')
     mangMemberRole(user, group, action)
     return Response(status=status.HTTP_200_OK)

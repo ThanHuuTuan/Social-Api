@@ -31,6 +31,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     model = Group
     fields = ('id', 'url', 'name')
   #end
+#end
 
 class UserPostSerializer(serializers.HyperlinkedModelSerializer):
   author = UserSerializer(read_only=True)
@@ -67,6 +68,12 @@ class UserGroupSerializer(serializers.HyperlinkedModelSerializer):
   class Meta:
     model = UserGroup
     fields = ('id', 'url', 'name', 'created', 'type', 'image')
+  #end
+  def create(self, validated_date):
+    group = UserGroup.objects.create(**validated_date)
+    owner = self.context['request'].user
+    GroupMember.objects.create(owner=owner, group=group, admin=True)
+    return group
   #end
 #end
 
