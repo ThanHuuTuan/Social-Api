@@ -39,6 +39,7 @@ urlpatterns = [
   path('api/users/<int:pk>/messages/', views.GetFriendMessages.as_view()),
   path('api/users/<int:pk>/changsts/', views.ChangeFriendStatus.as_view()),
   path('api/groups/<int:pk>/members/', views.GetGroupMembers.as_view()),
+  path('api/groups/<int:pk>/posts/', views.GetGroupPosts.as_view()),
   path('api/groups/<int:pk>/admins/', views.GetGroupAdmins.as_view()),
   path('api/groups/<int:pk>/messages/', views.GetGroupMessages.as_view()),
   path('api/groups/<int:pk>/requests/', views.GetGroupRequests.as_view()),

@@ -46,6 +46,20 @@ class UserPostSerializer(serializers.HyperlinkedModelSerializer):
   #end
 #end
 
+
+class GroupPostSerializer(serializers.HyperlinkedModelSerializer):
+  author = UserSerializer(read_only=True)
+  class Meta:
+    model = GroupPost 
+    fields = ('id', 'url', 'author', 'content', 'image', 'publish')
+
+  def create(self, validated_date):
+    validated_date['author'] = self.context['request'].user
+    post = UserPost.objects.create(**validated_date)
+    return post
+  #end
+#end
+
 class PostLikeSerializer(serializers.HyperlinkedModelSerializer):
   owner = UserSerializer(read_only=True)
   class Meta:

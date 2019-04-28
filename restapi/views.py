@@ -143,6 +143,13 @@ class GetGroupMembers(APIView):
   #end
 #end
 
+class GetGroupPosts(APIView):
+  def get(self, request, pk):
+    posts = GroupPost.objects.filter(group=pk)
+    serializer = UserPostSerializer(posts, many=True, context={'request': request})
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+  #end
+#end
 
 class GetGroupAdmins(APIView):
   def get(self, request, pk):

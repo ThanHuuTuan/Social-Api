@@ -25,7 +25,6 @@ class UserPost(models.Model):
   #end
 #end
 
-
 class PostLike(models.Model):
   owner = models.ForeignKey(User, 
     related_name='galngkeng',
@@ -145,6 +144,30 @@ class UserGroup(models.Model):
   )
   def __str__(self):
     return self.name
+  #end
+#end
+
+
+class GroupPost(models.Model):
+  content = models.CharField(
+    max_length=1000
+  )
+  group = models.ForeignKey(UserGroup,
+    on_delete=models.CASCADE,
+    related_name='posts'
+  )
+  author = models.ForeignKey(User,
+    on_delete=models.CASCADE,
+    related_name='lahjgkengll'
+  )
+  image = models.CharField(
+    max_length=1000, 
+  )
+  publish = models.DateField(
+    default=date.today
+  )
+  def __str__(self):
+    return self.content[:50]
   #end
 #end
 
