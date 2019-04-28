@@ -34,6 +34,8 @@ urlpatterns = [
   path('api/logout/', views.TokenLogout.as_view()),
   path('api/users/<int:pk>/friends/', views.GetUserFriends.as_view()),
   path('api/users/<int:pk>/posts/', views.GetUserPosts.as_view()),
+  path('api/posts/<int:pk>/likes', views.GetPostLikes.as_view()),
+  path('api/posts/<int:pk>/comments', views.GetPostComments.as_view()),
   path('api/users/<int:pk>/messages/', views.GetFriendMessages.as_view()),
   path('api/users/<int:pk>/changsts/', views.ChangeFriendStatus.as_view()),
   path('api/groups/<int:pk>/members/', views.GetGroupMembers.as_view()),

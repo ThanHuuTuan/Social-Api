@@ -46,6 +46,35 @@ class UserPostSerializer(serializers.HyperlinkedModelSerializer):
   #end
 #end
 
+class PostLikeSerializer(serializers.HyperlinkedModelSerializer):
+  owner = UserSerializer(read_only=True)
+  class Meta:
+    model = PostLike 
+    fields = ('id', 'owner', 'date')
+  #end
+
+  def create(self, validated_date):
+    validated_date['owner'] = self.context['request'].user
+    post = UserPost.objects.create(**validated_date)
+    return post
+  #end
+#end
+
+
+class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
+  owner = UserSerializer(read_only=True)
+  class Meta:
+    model = PostComment 
+    fields = ('id', 'owner', 'date', 'content')
+  #end
+
+  def create(self, validated_date):
+    validated_date['owner'] = self.context['request'].user
+    post = UserPost.objects.create(**validated_date)
+    return post
+  #end
+#end
+
 class UserMessageSerializer(serializers.HyperlinkedModelSerializer):
   sender = UserSerializer(read_only=True)
   recver = UserSerializer(read_only=True)

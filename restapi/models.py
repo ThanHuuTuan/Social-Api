@@ -26,6 +26,38 @@ class UserPost(models.Model):
 #end
 
 
+class PostLike(models.Model):
+  owner = models.ForeignKey(User, 
+    related_name='galngkeng',
+    on_delete=models.CASCADE
+  )
+  post = models.ForeignKey(UserPost,
+    related_name='likes',
+    on_delete=models.CASCADE
+  )
+  date = models.DateField(
+    default=date.today
+  )
+#end
+
+
+class PostComment(models.Model):
+  owner = models.ForeignKey(User, 
+    related_name='genglandkd',
+    on_delete=models.CASCADE
+  )
+  post = models.ForeignKey(UserPost,
+    related_name='comments',
+    on_delete=models.CASCADE
+  )
+  content = models.CharField(
+    max_length=1000
+  )
+  date = models.DateField(
+    default=date.today
+  )
+#end
+
 class Friendship(models.Model):
   owner = models.ForeignKey(User, 
     related_name='friendship',
@@ -41,7 +73,7 @@ class Friendship(models.Model):
 #end
 
 
-class UserRequest(models.Model):
+class FriendRequest(models.Model):
   recver = models.ForeignKey(User,
     related_name='reqrcvd',
     on_delete=models.CASCADE
@@ -223,8 +255,8 @@ def getRequests(group):
 
 def getFriendStatus(user, friend):
   isFriend = Friendship.objects.filter(owner=user, friend=friend).count()
-  reqsent = UserRequest.objects.filter(sender=user, recver=friend).count()
-  reqrcvd = UserRequest.objects.filter(sender=friend, recver=user).count()
+  reqsent = FriendRequest.objects.filter(sender=user, recver=friend).count()
+  reqrcvd = FriendRequest.objects.filter(sender=friend, recver=user).count()
   if(id(user) == id(friend)):
     return 'thiself'
   elif(isFriend):
@@ -243,15 +275,15 @@ def changeFrndSts(user, friend, action):
     Friendship.objects.filter(owner=user, friend=friend).delete()
     Friendship.objects.filter(owner=friend, friend=user).delete()
   elif(action == 'sendrqust'):
-    UserRequest.objects.create(sender=user, recver=friend)
+    FriendRequest.objects.create(sender=user, recver=friend)
   elif(action == 'delsntrqst'):
-    UserRequest.objects.filter(sender=user, recver=friend).delete()
+    FriendRequest.objects.filter(sender=user, recver=friend).delete()
   elif(action == 'acptrequst'):
     Friendship.objects.create(owner=user, friend=friend)
     Friendship.objects.create(owner=friend, friend=user)
-    UserRequest.objects.filter(sender=friend, recver=user).delete()
+    FriendRequest.objects.filter(sender=friend, recver=user).delete()
   elif(action == 'delrcvdrqst'):
-    UserRequest.objects.filter(sender=friend, recver=user).delete()
+    FriendRequest.objects.filter(sender=friend, recver=user).delete()
   #end
 #end
 

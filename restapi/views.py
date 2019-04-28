@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
+from django.shortcuts import render
 
 class UserViewSet(viewsets.ModelViewSet):
   queryset = User.objects.all()
@@ -48,6 +49,23 @@ class UserPostViewSet(viewsets.ModelViewSet):
   queryset = UserPost.objects.all()
   serializer_class = UserPostSerializer
 #end
+
+class GetPostLikes(APIView):
+  def get(self, request, pk):
+    likes = PostLike.objects.filter(post=pk)
+    serializer = PostLikeSerializer(likes, many=True, context={'request': request})
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+  #end
+#end
+
+class GetPostComments(APIView):
+  def get(self, request, pk):
+    likes = PostComment.objects.filter(post=pk)
+    serializer = PostCommentSerializer(likes, many=True, context={'request': request})
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+  #end
+#end
+
 
 class UserGroupViewSet(viewsets.ModelViewSet):
   queryset = UserGroup.objects.all()
